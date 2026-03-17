@@ -1,5 +1,9 @@
 # Python BEMT Propeller Solver
 
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![Status](https://img.shields.io/badge/Status-Research%20Grade-success)
+
 A high-performance Python implementation of the **Blade Element Momentum Theory (BEMT)** for predicting the aerodynamic and hydrodynamic performance of propellers.
 
 The solver computes:
@@ -60,8 +64,7 @@ Responsible for:
 - Interpolating aerodynamic coefficients
 
 Selection is based on:
-
-# Reynold's Number
+Reynold's Number
 
 ---
 
@@ -214,16 +217,25 @@ Install dependencies: pip install numpy scipy matplotlib
 
 ## Running the Code
 
-Run:
-main.py
+Step-by-step implementation:
+
+1. Go to: "./geometry_and_performance_data/geometry.dat"
+2. Update the propellor geometry, providing propeller elemental data (radial location, chord and pitch other data is optional) without the field names. Go to: "./APC propeller geometry/4x4E-3-PERF.PE0" for reference. Or use propeller geometries data availabe in "./APC propeller geometry"
+3. Update the propeller performance in "./geometry_and_performance_data/Performance.dat", providing freestream velocity data. Go to: "./APC Propeller Performance Data/Aerial propeller data/PER3_4X4E-3.dat" for reference. Or use corresponding propeller perfromance data available in "./APC Propeller Performance Data/Aerial propeller data"
+4. Update the airfoil used in the propeller, add the geometry data in "./Airfoil_geometry".
+5. Update the airfoil 360 polar data in "./Airfoil_360_polar_data" for various Reynold's number.
+6. Update the new airfoil information in "./src/airfoil_selection.py"
+7. Run: main.py
+
+To convert the code from aerial to marine, just update the density and kinematic viscosity values in "./src/main.py".
 
 The solver will:
 
-1. Load propeller geometry
-2. Estimate Reynolds number
-3. Select airfoil polar data
-4. Compute propeller performance
-5. Plot results
+- Load propeller geometry
+- Estimate Reynolds number
+- Select airfoil polar data
+- Compute propeller performance
+- Plot results
 
 ## Author
 
