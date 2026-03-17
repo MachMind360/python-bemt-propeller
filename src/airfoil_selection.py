@@ -1,7 +1,7 @@
 import propeller_geometry as pg
 import numpy as np
 
-def airfoil_selections(propeller_geometry_path, performance_file_path, nu):
+def airfoil_selections(propeller_geometry_path: str, performance_file_path: str, nu: float):
     """Selects the airfoil polar data and returns them for the given Airfoil"""
     Re = pg.renolds_number_finder(propeller_geometry_path, performance_file_path, nu)
     if Re <= 20000:

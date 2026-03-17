@@ -1,20 +1,34 @@
 import numpy as np
+from scipy.interpolate import interp1d
 
-def propeller_geometry_creation(geometry_file_path, number_of_blades):
+def propeller_geometry_creation(geometry_file_path: str, number_of_blades: int, num_of_blade_divisions: int):
     """Loads the given propeller data in the specified format and returns 
-    elemental cord, pitch, solidity and stations with hub radius, tip radius and number of blades"""
+    elemental cord, pitch, solidity and stations with hub radius, tip radius and number of blades.
+    \nInputs:
+    1. Geometry file path
+    2. Number of blades on the propeller
+    3. Number of blades divisions (eg: 40), enter 0 to take defauult value"""
     df_geom = np.loadtxt(geometry_file_path)
 
-    chord = df_geom[:, 1]/39.37
-    propeller_pitch = df_geom[:, 7]*(np.pi/180)
     hub_radius = df_geom[0, 0]/39.37
     tip_radius = df_geom[-1, 0]/39.37
 
-    elements = len(df_geom)
-    division = (tip_radius - hub_radius)/elements
-    r = np.linspace(hub_radius, tip_radius, elements)
+    if num_of_blade_divisions == 0:
+        elements = len(df_geom)
+        division = (tip_radius - hub_radius)/elements
+        r = np.linspace(hub_radius, tip_radius, elements)
+        chord = df_geom[:, 1]/39.37
+        propeller_pitch = df_geom[:, 7]*(np.pi/180)
+    else:
+        elements = num_of_blade_divisions
+        division = (tip_radius - hub_radius)/elements
+        r = np.linspace(hub_radius, tip_radius, elements)
+        chord_intr_fnc = interp1d(df_geom[:, 0]/39.37, df_geom[:, 1]/39.37, kind='linear')
+        chord = chord_intr_fnc(r)
+        propeller_pitch_intr_fnc = interp1d(df_geom[:, 0]/39.37, df_geom[:, 7]*(np.pi/180), kind='linear')
+        propeller_pitch = propeller_pitch_intr_fnc(r)
 
-    solidity = number_of_blades*df_geom[:, 1]/(2*np.pi*df_geom[:, 0])     
+    solidity = number_of_blades*chord/(2*np.pi*r)     
 
     prop_geom = {
         "chord": chord,
@@ -29,7 +43,7 @@ def propeller_geometry_creation(geometry_file_path, number_of_blades):
 
     return prop_geom
 
-def freestream_data(performance_file_path):
+def freestream_data(performance_file_path: str):
     """Loads the experimental data of the propeller in the specified format 
     if available and returns the freestream velocity, measured thrust, torque, power and efficiency"""
     df_perf = np.loadtxt(performance_file_path)
@@ -59,7 +73,7 @@ def freestream_data(performance_file_path):
         
         return free_stream_data
 
-def renolds_number_finder(geometry_file_path, performance_file_path, nu):
+def renolds_number_finder(geometry_file_path: str, performance_file_path: str, nu: float):
     """Returns the calculated Reynold's number at 70% cord length"""
     df_geom = np.loadtxt(geometry_file_path)
     vinf = freestream_data(performance_file_path)

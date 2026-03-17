@@ -9,16 +9,16 @@ import matplotlib.pyplot as plt
 N = 6000 #Propeller RPM
 omega = 2*np.pi*(N/60) #Propeller angular velocity
 rho = 1.225 #1.225 density of air #997 density of water
-nu = 15.7*10**(-6) #kinamatic viscosity
+nu = 15.7*10**(-6) #15.7*10^(-6), 0.8927*10^(-6) Kinematic viscosity of air and water respectively
 B = 2 #Number of blades
-transition = 4.76 #Satation where the airfoil transitions
+transition = 4.76 #Station where the airfoil transitions
 
 freestream_data_path = "./geometry_and_performance_data/Performance.dat"
 geometry_path = "./geometry_and_performance_data/geometry.dat"
 ##############################################################
 
 vinf = freestream_data(freestream_data_path)
-geom = propeller_geometry_creation(geometry_path, B)
+geom = propeller_geometry_creation(geometry_path, B, 0)
 airfoils = airfoil_selections(geometry_path, freestream_data_path, nu)
 
 total_thrust = np.zeros(len(vinf["vinf"]))
@@ -47,10 +47,9 @@ for k in range(len(vinf["vinf"])):
             cd_interp = interp1d(airfoils[2][:, 0]*(np.pi/180), airfoils[2][:, 2], kind='linear', fill_value="extrapolate")
         
         def residual(phi):
-
+            """Returns the residual to the chosen phi value"""
             alpha = pitch - phi
 
-            # For Aerial case
             cl = cl_interp(alpha)
             cd = cd_interp(alpha)
 
