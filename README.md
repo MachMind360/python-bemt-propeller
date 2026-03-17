@@ -227,7 +227,7 @@ Step-by-step implementation:
 6. Update the new airfoil information in "./src/airfoil_selection.py"
 7. Run: main.py
 
-To convert the code from aerial to marine, just update the density and kinematic viscosity values in "./src/main.py".
+**To convert the code from aerial to marine, just update the density and kinematic viscosity values in "./src/main.py".**
 
 The solver will:
 
